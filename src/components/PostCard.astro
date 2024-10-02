@@ -1,0 +1,31 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { getEntry } from 'astro:content';
+
+type Props = {
+  post: CollectionEntry<"posts">;
+}
+const {post} = Astro.props
+const {author, description, title, date} = post.data;
+const {data: authorData} = await getEntry("team", author.id);
+console.log(" 🚀 ~ author:", author);
+
+---
+
+<article class="post-card">
+  <div>
+    <h2>{title}</h2>
+    <div class="meta">
+      <Image src={authorData.headshot} alt={authorData.name} width="25" />
+       <p>{authorData.name}</p>
+       <span>.</span>
+      <time datetime={date.toISOString()}>{date.toLocaleDateString(undefined, {
+        dateStyle: "medium",
+         timeZone: "UTC"
+      })}</time>
+    </div>
+  </div>
+  <p>{description}</p>
+  <a href={`/posts/${post.slug}`} class="btn">Read Post</a>
+</article>
